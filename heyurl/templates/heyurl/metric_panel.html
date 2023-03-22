@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>HeyURL!</title>
+
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'heyurl/bootstrap.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'heyurl/style.css' %}">
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light mb-sm-4">
+    <a class="navbar-brand" href="/">HeyURL!</a>
+    <a class="navbar-brand" href="/metric-panel/{{ short_url }}">Metric Panel: {{ short_url }}</a>
+</nav>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-8 offset-sm-2">
+            <div class="card mb-sm-4">
+                <div class="card-header">
+                    Total clicks per day during this {{ month }}
+                </div>
+                <div class="card-body">
+                    {% if clicks %}
+                        {% load humanize %}
+                        <table class="table">
+                            <thead class="thead-dark">
+                            <tr>
+                                <th scope="col">Date</th>
+                                <th scope="col">Clicks Count</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for click in clicks %}
+                                <tr>
+                                    <td>{{ click.date|date }}</td>
+                                    <td>{{ click.count|intcomma }}</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    {% else %}
+                        <div class="alert alert-light" role="alert">
+                            There are no clicks for the '/{{ short_url }}' URL in this {{ month }}.
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="card mb-sm-4">
+                <div class="card-header">
+                    Browsers and Platforms used to click on the '/{{ short_url }}' URL during this {{ month }}
+                </div>
+                <div class="card-body">
+                    {% if user_agents %}
+                        {% load humanize %}
+                        <table class="table">
+                            <thead class="thead-dark">
+                            <tr>
+                                <th scope="col">Browser</th>
+                                <th scope="col">Platforms</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for item in user_agents %}
+                                <tr>
+                                    <td>{{ item.browser }}</td>
+                                    <td>{{ item.platform }}</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    {% else %}
+                        <div class="alert alert-light" role="alert">
+                            There are no clicks for the '/{{ short_url }}' URL in this {{ month }}.
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>HeyURL!</title>
+
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'heyurl/bootstrap.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'heyurl/style.css' %}">
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light mb-sm-4">
+    <a class="navbar-brand" href="#">HeyURL!</a>
+</nav>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-8 offset-sm-2">
+            <div class="card mb-sm-4">
+                <div class="card-header">
+                    Create New Short URL
+                </div>
+                <div class="card-body">
+                    <form action="{% url 'store' %}" method="post">
+                        {% csrf_token %}
+                        {% for field in form %}
+                            <div class="form-group row">
+                                <label for="{{ field.auto_id }}"
+                                       class="col-sm-2 col-form-label">{{ field.label }}</label>
+                                <div class="col-sm-10">
+                                    {{ field }}
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-sm-12">
+                                    {% for error in field.errors %}
+                                        <div class="alert alert-danger" role="alert">
+                                            {{ error }}
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        {% endfor %}
+                        <div class="form-group row">
+                            <div class="col-sm-10">
+                                <button type="submit" class="btn btn-primary">Generate Short URL</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="card mb-sm-4">
+                <div class="card-header">
+                    Current URLs
+                </div>
+                <div class="card-body">
+                    {% if urls %}
+                        {% load humanize %}
+                        <table class="table">
+                            <thead class="thead-dark">
+                            <tr>
+                                <th scope="col">Short URL</th>
+                                <th scope="col">Original URL</th>
+                                <th scope="col">Created</th>
+                                <th scope="col">Clicks Count</th>
+                                <th scope="col"></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for url in urls %}
+                                <tr>
+                                    <td>
+                                        <a href="/u/{{ url.short_url }}" target ="_blank">/{{ url.short_url }}</a>
+                                    </td>
+                                    <td>{{ url.original_url }}</td>
+                                    <td>{{ url.created_at }}</td>
+                                    <td>{{ url.clicks|intcomma }}</td>
+                                    <td><a href="/metric-panel/{{ url.short_url }}">
+                                        <svg class="octicon octicon-graph" viewBox="0 0 16 16" version="1.1" width="16"
+                                             height="16" aria-hidden="true">
+                                            <path fill-rule="evenodd"
+                                                  d="M16 14v1H0V0h1v14h15zM5 13H3V8h2v5zm4 0H7V3h2v10zm4 0h-2V6h2v7z"></path>
+                                        </svg>
+                                    </a></td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    {% else %}
+                        <div class="alert alert-light" role="alert">
+                            There are no URLs in the system yet!
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
