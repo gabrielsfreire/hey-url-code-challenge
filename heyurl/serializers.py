@@ -11,7 +11,7 @@ class ClickSerializer(serializers.ModelSerializer):
 
 
 class UrlSerializer(serializers.ModelSerializer):
-    url = serializers.SerializerMethodField(source='short_url', read_only=True)
+    url = serializers.SerializerMethodField(read_only=True)
     metrics = serializers.ResourceRelatedField(many=True, read_only=True, source='click_set')
 
     def get_url(self, instace):

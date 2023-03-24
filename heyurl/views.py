@@ -4,11 +4,10 @@ from django.db.models import Count
 from django.db.models.functions import TruncDay
 from django.shortcuts import render, redirect
 from django.utils import timezone
+from rest_framework import viewsets, mixins
 
 from .forms import UrlForm
 from .models import Url, Click
-from rest_framework import viewsets, mixins
-
 from .serializers import UrlSerializer
 
 
@@ -138,5 +137,8 @@ def metric_panel(request, short_url):
 
 
 class UrlViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
-    queryset = Url.objects.all()
+    """
+    API endpoint to list the last 10 created urls in the database
+    """
+    queryset = Url.objects.all().order_by('-created_at')[0:10]
     serializer_class = UrlSerializer
